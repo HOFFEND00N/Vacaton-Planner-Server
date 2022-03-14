@@ -5,15 +5,23 @@ namespace VacationPlanner.Models
 {
     public class Vacation
     {
-        public DateTime start { get; set; }
-        public DateTime end { get; set; }
-        public VacationState vacationState { get; set; }
+
+        public int Id { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public VacationState VacationState { get; set; }
+        public int EmployeeId { get; set; }
+
+        public Vacation()
+        {
+
+        }
 
         public Vacation(DateTime start, DateTime end, VacationState vacationState)
         {
-            this.start = start;
-            this.end = end;
-            this.vacationState = vacationState;
+            Start = start;
+            End = end;
+            VacationState = vacationState;
         }
     }
 }

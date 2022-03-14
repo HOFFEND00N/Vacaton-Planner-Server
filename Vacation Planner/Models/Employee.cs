@@ -1,18 +1,31 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using VacationPlanner.Exceptions;
 
 namespace VacationPlanner.Models
 {
     public class Employee
     {
-        public string name { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
         public List<Vacation> Vacations { get; set; }
+        public int TeamId { get; set; }
+        public ISomeClass SomeClass { get; set; }
 
-        public Employee(string name, List<Vacation> vacations)
+        public Employee(int id, string name, List<Vacation> vacations)
         {
-            this.name = name;
+            Id = id;
+            Name = name;
             Vacations = vacations;
+        }
+
+        public Employee(int id, string name, int teamId)
+        {
+            Id = id;
+            Name = name;
+            TeamId = teamId;
         }
 
         public Vacation AddVacation(DateTime start, DateTime end)
@@ -22,10 +35,7 @@ namespace VacationPlanner.Models
             {
                 throw new InvalidVacationDatesException();
             }
-            var newVacation = new Vacation(start, end, Constants.VacationState.Pending);
-            Vacations.Add(newVacation);
-
-            return newVacation;
+            return SomeClass.AddVacation(Id, start, end);
         }
     }
 }
