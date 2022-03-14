@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Vacation_Planner.Constants;
-using Vacation_Planner.Models;
+using VacationPlanner.Constants;
+using VacationPlanner.Models;
 using Xunit;
 using FluentAssertions;
-using Vacation_Planner.Exceptions;
+using VacationPlanner.Exceptions;
 
 namespace VacationPlanner.xUnitTests
 {

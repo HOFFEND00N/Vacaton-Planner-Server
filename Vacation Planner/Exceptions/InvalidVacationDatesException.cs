@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vacation_Planner.Exceptions
+namespace VacationPlanner.Exceptions
 {
     public class InvalidVacationDatesException: Exception
     {

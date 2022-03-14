@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vacation Planner\Vacation Planner.csproj" />
+    <ProjectReference Include="..\Vacation Planner\VacationPlanner.csproj" />
   </ItemGroup>
 
 </Project>

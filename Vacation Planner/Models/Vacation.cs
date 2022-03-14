@@ -1,13 +1,13 @@
 ﻿using System;
-using Vacation_Planner.Constants;
+using VacationPlanner.Constants;
 
-namespace Vacation_Planner.Models
+namespace VacationPlanner.Models
 {
     public class Vacation
     {
-        public DateTime start;
-        public DateTime end;
-        public VacationState vacationState;
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+        public VacationState vacationState { get; set; }
 
         public Vacation(DateTime start, DateTime end, VacationState vacationState)
         {

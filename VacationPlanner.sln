@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vacation Planner", "Vacation Planner\Vacation Planner.csproj", "{3116F5AA-AD1B-4A85-9426-55E70B69FF49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationPlanner", "Vacation Planner\VacationPlanner.csproj", "{3116F5AA-AD1B-4A85-9426-55E70B69FF49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationPlanner.xUnitTests", "VacationPlanner.xUnitTests\VacationPlanner.xUnitTests.csproj", "{93E3C75F-342A-4E1F-9C89-800D2715F993}"
 EndProject

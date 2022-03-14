@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Vacation_Planner.Exceptions;
+using VacationPlanner.Exceptions;
 
-namespace Vacation_Planner.Models
+namespace VacationPlanner.Models
 {
     public class Employee
     {
-        public string name;
-        public List<Vacation> Vacations;
+        public string name { get; set; }
+        public List<Vacation> Vacations { get; set; }
 
         public Employee(string name, List<Vacation> vacations)
         {
@@ -22,7 +22,10 @@ namespace Vacation_Planner.Models
             {
                 throw new InvalidVacationDatesException();
             }
-            return new Vacation(start, end, Constants.VacationState.Pending);
+            var newVacation = new Vacation(start, end, Constants.VacationState.Pending);
+            Vacations.Add(newVacation);
+
+            return newVacation;
         }
     }
 }
