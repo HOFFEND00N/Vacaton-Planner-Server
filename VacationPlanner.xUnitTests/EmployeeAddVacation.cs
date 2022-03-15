@@ -1,33 +1,23 @@
 using System;
-using System.Collections.Generic;
 using VacationPlanner.Constants;
 using VacationPlanner.Models;
 using Xunit;
 using FluentAssertions;
 using VacationPlanner.Exceptions;
+using VacationPlanner.Services;
+using VacationPlanner.xUnitTests.Stubs;
 
 namespace VacationPlanner.xUnitTests
 {
     public class EmployeeAddVacation
     {
         DateTime currentDate;
-
-        public class MockedSomeClass : ISomeClass
-        {
-            public Vacation AddVacation(int employeeId, DateTime start, DateTime end)
-            {
-                return new Vacation(start, end, VacationState.Pending);
-            }
-
-            public Employee GetEmployee(int id)
-            {
-                throw new NotImplementedException();
-            }
-        }
+        private EmployeeService employeeService;
 
         public EmployeeAddVacation()
         {
             currentDate = DateTime.Now;
+            employeeService = new EmployeeService();
         }
 
 
@@ -37,10 +27,8 @@ namespace VacationPlanner.xUnitTests
             var vacationStartDate = currentDate.AddDays(14);
             var vacationEndDate = currentDate.AddDays(21);
             var expectedVacation = new Vacation(vacationStartDate, vacationEndDate, VacationState.Pending);
-            var employee = new Employee(0, "test name", new List<Vacation>());
-            employee.SomeClass = new MockedSomeClass();
 
-            var actualVacation = employee.AddVacation(vacationStartDate, vacationEndDate);
+            var actualVacation = employeeService.AddVacation(vacationStartDate, vacationEndDate, new StubDbHelper(), 0);
 
             expectedVacation.Should().BeEquivalentTo(actualVacation);
         }
@@ -50,10 +38,8 @@ namespace VacationPlanner.xUnitTests
         {
             var vacationStartDate = currentDate.AddDays(15);
             var vacationEndDate = currentDate.AddDays(1);
-            var employee = new Employee(0, "test name", new List<Vacation>());
-            employee.SomeClass = new MockedSomeClass();
 
-            Func<Vacation> action = () => employee.AddVacation(vacationStartDate, vacationEndDate);
+            Func<Vacation> action = () => employeeService.AddVacation(vacationStartDate, vacationEndDate, new StubDbHelper(), 0);
 
             action.Should().Throw<InvalidVacationDatesException>();
         }
@@ -63,10 +49,8 @@ namespace VacationPlanner.xUnitTests
         {
             var vacationStartDate = currentDate.AddDays(1);
             var vacationEndDate = currentDate.AddYears(5);
-            var employee = new Employee(0, "test name", new List<Vacation>());
-            employee.SomeClass = new MockedSomeClass();
 
-            Func<Vacation> action = () => employee.AddVacation(vacationStartDate, vacationEndDate);
+            Func<Vacation> action = () => employeeService.AddVacation(vacationStartDate, vacationEndDate, new StubDbHelper(), 0);
 
             action.Should().Throw<InvalidVacationDatesException>();
         }
@@ -74,11 +58,9 @@ namespace VacationPlanner.xUnitTests
         [Fact]
         public void ShouldThrowExceptionWhenVacationStartDateLessThanCurrentDatePlusWeek()
         {
-            var employee = new Employee(0, "test name", new List<Vacation>());
             var vacationStartDate = currentDate.AddDays(6);
-            employee.SomeClass = new MockedSomeClass();
 
-            Func<Vacation> action = () => employee.AddVacation(vacationStartDate, vacationStartDate.AddDays(5));
+            Func<Vacation> action = () => employeeService.AddVacation(vacationStartDate, vacationStartDate.AddDays(5), new StubDbHelper(), 0);
 
             action.Should().Throw<InvalidVacationDatesException>();
         }
@@ -86,11 +68,9 @@ namespace VacationPlanner.xUnitTests
         [Fact]
         public void ShouldThrowExceptionWhenVacationStartDateGreaterThanCurrentDateOverOneYear()
         {
-            var employee = new Employee(0, "test name", new List<Vacation>());
             var vacationStartDate = currentDate.AddYears(1).AddDays(1);
-            employee.SomeClass = new MockedSomeClass();
 
-            Func<Vacation> action = () => employee.AddVacation(vacationStartDate, vacationStartDate.AddDays(5));
+            Func<Vacation> action = () => employeeService.AddVacation(vacationStartDate, vacationStartDate.AddDays(5), new StubDbHelper(), 0);
 
             action.Should().Throw<InvalidVacationDatesException>();
         }

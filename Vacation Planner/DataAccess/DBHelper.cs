@@ -1,17 +1,12 @@
 ﻿using Dapper;
 using System;
 using System.Data.SqlClient;
+using VacationPlanner.DataAccess;
 using VacationPlanner.Models;
 
 namespace VacationPlanner
 {
-    public interface ISomeClass
-    {
-        Employee GetEmployee(int id);
-        Vacation AddVacation(int employeeId, DateTime start, DateTime end);
-    }
-
-    public class SomeClass : ISomeClass
+    public class DbHelper : IDbHelper
     {
         public Employee GetEmployee(int id)
         {
