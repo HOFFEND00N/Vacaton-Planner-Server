@@ -5,7 +5,7 @@ using VacationPlanner.Models;
 
 namespace VacationPlanner.xUnitTests.Stubs
 {
-    class StubDbHelper : IDbHelper
+    class StubDbHelper : IDbService
     {
         public Vacation AddVacation(int employeeId, DateTime start, DateTime end)
         {
