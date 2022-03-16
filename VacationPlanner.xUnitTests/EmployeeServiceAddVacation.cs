@@ -20,7 +20,6 @@ namespace VacationPlanner.xUnitTests
             employeeService = new EmployeeService();
         }
 
-
         [Fact]
         public void ShouldCreateVacationWhenPassCorrectData()
         {

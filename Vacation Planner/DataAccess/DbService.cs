@@ -8,10 +8,16 @@ namespace VacationPlanner
 {
     public class DbService : IDbService
     {
+        private string DbConnectionString { get; set; }
+        public DbService(string dbConnectionString)
+        {
+            DbConnectionString = dbConnectionString;
+        }
+
         public Employee GetEmployee(int id)
         {
             const string query = "select * from Employee where Id=@Id";
-            using (var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=VacationPlanner;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            using (var connection = new SqlConnection())
             {
                 return connection.QueryFirst<Employee>(query, new { id });  ;
             }
