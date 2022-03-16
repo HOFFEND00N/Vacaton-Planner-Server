@@ -7,14 +7,21 @@ namespace VacationPlanner.Services
 {
     public class EmployeeService
     {
-        public Vacation AddVacation(DateTime start, DateTime end, IDbService dbHelper, int id)
+        public IDbService DbHelper { get; set; }
+
+        public EmployeeService(IDbService dbHelper)
+        {
+            DbHelper = dbHelper;
+        }
+
+        public Vacation AddVacation(DateTime start, DateTime end, int id)
         {
             if (DateTime.Compare(start, end) > 0 || (end - start).TotalDays > 365 * 4 ||
                 DateTime.Compare(start, DateTime.Now.AddDays(7)) < 0 || (start - DateTime.Now).TotalDays > 365)
             {
                 throw new InvalidVacationDatesException();
             }
-            return dbHelper.AddVacation(id, start, end);
+            return DbHelper.AddVacation(id, start, end);
         }
     }
 }
