@@ -1,18 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using VacationPlanner.Constants;
 using VacationPlanner.DataAccess;
-using VacationPlanner.Models;
+using VacationPlanner.DataAccess.Models;
 
 namespace VacationPlanner.xUnitTests.Stubs
 {
     class StubDbService : IDbService
     {
-        public Vacation AddVacation(int employeeId, DateTime start, DateTime end)
+        public List<DataEmployee> Employees;
+
+        public StubDbService(List<DataEmployee> employees)
         {
-            return new Vacation(start, end, VacationState.Pending);
+            Employees = employees;
         }
 
-        public Employee GetEmployee(int id)
+        public DataVacation AddVacation(int employeeId, DateTime start, DateTime end)
+        {
+            var vacation = new DataVacation(start, end, VacationState.Pending, employeeId);
+            Employees.Single(employee => employee.Id == employeeId).Vacations.Add(vacation);
+            return vacation;
+        }
+
+        public DataEmployee GetEmployee(int id)
         {
             throw new NotImplementedException();
         }

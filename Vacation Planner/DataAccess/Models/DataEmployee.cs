@@ -9,5 +9,12 @@ namespace VacationPlanner.DataAccess.Models
         public List<DataVacation> Vacations { get; set; }
         public int TeamId { get; set; }
         public IDbService DbHelper { get; set; }
+
+        public DataEmployee(int id, string name, List<DataVacation> vacations)
+        {
+            Id = id;
+            Name = name;
+            Vacations = vacations;
+        }
     }
 }

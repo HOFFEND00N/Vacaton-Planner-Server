@@ -7,11 +7,11 @@ namespace VacationPlanner.Services
 {
     public class EmployeeService
     {
-        public IDbService DbHelper { get; set; }
+        public IDbService DbService { get; set; }
 
-        public EmployeeService(IDbService dbHelper)
+        public EmployeeService(IDbService dbService)
         {
-            DbHelper = dbHelper;
+            DbService = dbService;
         }
 
         public Vacation AddVacation(DateTime start, DateTime end, int id)
@@ -21,7 +21,9 @@ namespace VacationPlanner.Services
             {
                 throw new InvalidVacationDatesException();
             }
-            return DbHelper.AddVacation(id, start, end);
+
+            var vacation = DbService.AddVacation(id, start, end);
+            return new Vacation(vacation.Start, vacation.End, vacation.VacationState);
         }
     }
 }
