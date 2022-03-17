@@ -14,7 +14,7 @@ namespace VacationPlanner.Services
             DbService = dbService;
         }
 
-        public Vacation AddVacation(DateTime start, DateTime end, int id)
+        public Vacation AddVacation(int employeeId, DateTime start, DateTime end)
         {
             if (DateTime.Compare(start, end) > 0 || (end - start).TotalDays > 365 * 4 ||
                 DateTime.Compare(start, DateTime.Now.AddDays(7)) < 0 || (start - DateTime.Now).TotalDays > 365)
@@ -22,7 +22,7 @@ namespace VacationPlanner.Services
                 throw new InvalidVacationDatesException();
             }
 
-            var vacation = DbService.AddVacation(id, start, end);
+            var vacation = DbService.AddVacation(employeeId, start, end);
             return new Vacation(vacation.Start, vacation.End, vacation.VacationState);
         }
     }
