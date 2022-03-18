@@ -33,6 +33,7 @@ namespace VacationPlanner
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Vacation_Planner", Version = "v1" });
             });
 
+            //services.AddSingleton<IConfiguration>(provider => Configuration);
             services.AddScoped<IDbService, DbService>();
         }
 

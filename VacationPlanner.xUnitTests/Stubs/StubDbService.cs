@@ -23,9 +23,18 @@ namespace VacationPlanner.xUnitTests.Stubs
             return vacation;
         }
 
-        public DataEmployee GetEmployee(int id)
+        public DataVacation DeleteVacation(int employeeId, int vacationId)
         {
-            throw new NotImplementedException();
+            var employee = Employees.Single(employee => employee.Id == employeeId);
+            var vacation = employee.Vacations.Single(vacation => vacation.Id == vacationId);
+
+            employee.Vacations.Remove(vacation);
+            return vacation;
+        }
+
+        public DataEmployee GetEmployee(int employeeId)
+        {
+            return Employees.Single(employee => employee.Id == employeeId);
         }
     }
 }

@@ -1,34 +1,40 @@
-﻿using Dapper;
-using System;
+﻿using System;
 using System.Data.SqlClient;
-using VacationPlanner.DataAccess;
+using Dapper;
+using Microsoft.Extensions.Configuration;
 using VacationPlanner.DataAccess.Models;
 
-namespace VacationPlanner
+namespace VacationPlanner.DataAccess
 {
     public class DbService : IDbService
     {
         private string DbConnectionString { get; set; }
-        public DbService(string dbConnectionString)
+
+        public DbService(IConfiguration config)
         {
-            DbConnectionString = dbConnectionString;
+            DbConnectionString = config["DbConnectionString"];
         }
 
-        public DataEmployee GetEmployee(int id)
+        public DataEmployee GetEmployee(int employeeId)
         {
             const string query = "select * from Employee where Id=@Id";
-            using (var connection = new SqlConnection(DbConnectionString))
-            {
-                return connection.QueryFirst<DataEmployee>(query, new { id });  ;
-            }
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataEmployee>(query, new {id = employeeId});
         }
+
         public DataVacation AddVacation(int employeeId, DateTime start, DateTime end)
         {
             const string query = "insert into Vacation output inserted.* values (@start, @end, 0, @employeeId)";
-            using (var connection = new SqlConnection(DbConnectionString))
-            {
-                return connection.QueryFirst<DataVacation>(query, new { start, end, employeeId });
-            }
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataVacation>(query, new {start, end, employeeId});
+        }
+
+        public DataVacation DeleteVacation(int employeeId, int vacationId)
+        {
+            const string query =
+                "delete from Vacation output deleted.* where Id = @employeeId and EmployeeId = @vacationId";
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataVacation>(query, new {employeeId, vacationId});
         }
     }
 }
