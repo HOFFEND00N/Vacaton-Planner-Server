@@ -18,8 +18,10 @@ namespace VacationPlanner.xUnitTests.Stubs
 
         public DataVacation AddVacation(int employeeId, DateTime start, DateTime end)
         {
-            var vacation = new DataVacation(start, end, VacationState.Pending, employeeId);
-            Employees.Single(employee => employee.Id == employeeId).Vacations.Add(vacation);
+            var employee = Employees.Single(employee => employee.Id == employeeId);
+            var vacation = new DataVacation(employee.Vacations.Count + 1, start, end, VacationState.Pending,
+                employeeId);
+            employee.Vacations.Add(vacation);
             return vacation;
         }
 

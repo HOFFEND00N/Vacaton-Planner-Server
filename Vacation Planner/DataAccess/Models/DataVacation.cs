@@ -11,12 +11,13 @@ namespace VacationPlanner.DataAccess.Models
         public VacationState VacationState { get; set; }
         public int EmployeeId { get; set; }
 
-        public DataVacation(DateTime start, DateTime end, VacationState vacationState, int employeeId)
+        public DataVacation(int id, DateTime start, DateTime end, VacationState vacationState, int employeeId)
         {
             Start = start;
             End = end;
             VacationState = vacationState;
             EmployeeId = employeeId;
+            Id = id;
         }
     }
 }
