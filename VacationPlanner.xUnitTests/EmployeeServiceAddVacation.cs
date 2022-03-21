@@ -44,7 +44,7 @@ namespace VacationPlanner.xUnitTests
 
             expectedVacation.Should().BeEquivalentTo(actualVacation);
             expectedVacation.Should().BeEquivalentTo(new Vacation(actualVacationInStub.Start, actualVacationInStub.End,
-                actualVacationInStub.VacationState));
+                actualVacationInStub.State));
         }
 
         [Fact]

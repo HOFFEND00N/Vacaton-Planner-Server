@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using VacationPlanner.Constants;
 using VacationPlanner.DataAccess.Models;
 using VacationPlanner.Exceptions;
 
@@ -49,12 +50,19 @@ namespace VacationPlanner.DataAccess
             return connection.QueryFirst<DataVacation>(query, new {start, end, employeeId});
         }
 
-        public DataVacation DeleteVacation(int employeeId, int vacationId)
+        public DataVacation DeleteVacation(int vacationId)
         {
             const string query =
-                "delete from Vacation output deleted.* where Id = @employeeId and EmployeeId = @vacationId";
+                "delete from Vacation output deleted.* where Id = @vacationId";
             using var connection = new SqlConnection(DbConnectionString);
-            return connection.QueryFirst<DataVacation>(query, new {employeeId, vacationId});
+            return connection.QueryFirst<DataVacation>(query, new {vacationId});
+        }
+
+        public DataVacation EditVacation(int vacationId, DateTime start, DateTime end, VacationState state)
+        {
+            const string query = "update Vacation set Start = @start, End = @end, State = @state where Id = @vacationId";
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataVacation>(query, new {start, end, state, vacationId});
         }
     }
 }

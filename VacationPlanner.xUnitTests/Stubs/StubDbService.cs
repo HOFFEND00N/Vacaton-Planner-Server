@@ -26,13 +26,36 @@ namespace VacationPlanner.xUnitTests.Stubs
             return vacation;
         }
 
-        public DataVacation DeleteVacation(int employeeId, int vacationId)
+        public DataVacation DeleteVacation(int vacationId)
         {
-            var employee = Employees.Single(employee => employee.Id == employeeId);
-            var vacation = employee.Vacations.Single(vacation => vacation.Id == vacationId);
+            foreach (var employee in Employees)
+            {
+                var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
+                if (vacation != null)
+                {
+                    employee.Vacations.Remove(vacation);
+                    return vacation;
+                }
+            }
 
-            employee.Vacations.Remove(vacation);
-            return vacation;
+            throw new NotFoundException($"vacation with id = {vacationId} not found");
+        }
+
+        public DataVacation EditVacation(int vacationId, DateTime start, DateTime end, VacationState state)
+        {
+            foreach (var employee in Employees)
+            {
+                var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
+                if (vacation != null)
+                {
+                    vacation.Start = start;
+                    vacation.End = end;
+                    vacation.State = state;
+                    return vacation;
+                }
+            }
+
+            throw new NotFoundException($"vacation with id = {vacationId} not found");
         }
 
         public DataEmployee GetEmployee(int employeeId)

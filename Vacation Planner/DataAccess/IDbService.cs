@@ -1,4 +1,5 @@
 ﻿using System;
+using VacationPlanner.Constants;
 using VacationPlanner.DataAccess.Models;
 
 namespace VacationPlanner.DataAccess
@@ -7,6 +8,7 @@ namespace VacationPlanner.DataAccess
     {
         DataEmployee GetEmployee(int employeeId);
         DataVacation AddVacation(int employeeId, DateTime start, DateTime end);
-        DataVacation DeleteVacation(int employeeId, int vacationId);
+        DataVacation DeleteVacation(int vacationId);
+        DataVacation EditVacation(int vacationId, DateTime start, DateTime end, VacationState state);
     }
 }
