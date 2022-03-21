@@ -72,6 +72,11 @@ namespace VacationPlanner.xUnitTests.Stubs
             throw new NotFoundException($"vacation with id = {vacationId} not found");
         }
 
+        public List<DataEmployee> GetTeamMembers(int teamId)
+        {
+            return Employees.Where(employee => employee.TeamId == teamId).ToList();
+        }
+
         public DataEmployee GetEmployee(int employeeId)
         {
             DataEmployee employee;

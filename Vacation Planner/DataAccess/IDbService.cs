@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using VacationPlanner.Constants;
 using VacationPlanner.DataAccess.Models;
 
@@ -11,5 +12,6 @@ namespace VacationPlanner.DataAccess
         DataVacation DeleteVacation(int vacationId);
         DataVacation EditVacation(int vacationId, DateTime start, DateTime end);
         DataVacation ChangeVacationState(int vacationId, VacationState state);
+        List<DataEmployee> GetTeamMembers(int teamId);
     }
 }
