@@ -32,11 +32,19 @@ namespace VacationPlanner.Services
             var employee = DbService.GetEmployee(employeeId);
             if (employee.Vacations.Count(vacation => vacation.Id == vacationId) != 1)
             {
-                throw new VacationNotFoundException();
+                throw new NotFoundException($"Vacation with id = {vacationId} not found");
             }
 
             var deletedVacation = DbService.DeleteVacation(vacationId, employeeId);
             return new Vacation(deletedVacation.Start, deletedVacation.End, deletedVacation.VacationState);
+        }
+
+        public Employee GetEmployee(int employeeId)
+        {
+            var employee = DbService.GetEmployee(employeeId);
+            var vacations = employee.Vacations.Select(vacation =>
+                new Vacation(vacation.Start, vacation.End, vacation.VacationState)).ToList();
+            return new Employee(employee.Id, employee.Name, vacations);
         }
     }
 }

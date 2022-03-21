@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using VacationPlanner.DataAccess.Models;
+using VacationPlanner.Exceptions;
 
 namespace VacationPlanner.DataAccess
 {
@@ -19,7 +22,24 @@ namespace VacationPlanner.DataAccess
         {
             const string query = "select * from Employee where Id=@Id";
             using var connection = new SqlConnection(DbConnectionString);
-            return connection.QueryFirst<DataEmployee>(query, new {id = employeeId});
+            var queryResult = connection.Query<DataEmployee>(query, new {id = employeeId}).ToList();
+
+            if (queryResult.Count == 0)
+            {
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
+            }
+
+            var employee = queryResult[0];
+            employee.Vacations.AddRange(GetEmployeeVacations(employeeId));
+
+            return employee;
+        }
+
+        private List<DataVacation> GetEmployeeVacations(int employeeId)
+        {
+            using var connection = new SqlConnection(DbConnectionString);
+            const string query = "select * from Vacation where EmployeeId = @EmployeeId";
+            return connection.Query<DataVacation>(query, new {employeeId}).ToList();
         }
 
         public DataVacation AddVacation(int employeeId, DateTime start, DateTime end)

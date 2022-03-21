@@ -50,18 +50,21 @@ namespace VacationPlanner.xUnitTests
         [Fact]
         public void ShouldThrowExceptionWhenEmployeeNotExist()
         {
-            Func<Vacation> deleteVacation = () => EmployeeService.DeleteVacation(1, 0);
+            var employeeId = 1;
+            Func<Vacation> deleteVacation = () => EmployeeService.DeleteVacation(employeeId, 0);
 
-            deleteVacation.Should().Throw<InvalidOperationException>()
-                .WithMessage("Sequence contains no matching element");
+            deleteVacation.Should().Throw<NotFoundException>()
+                .WithMessage($"Employee with id = {employeeId} not found");
         }
 
         [Fact]
         public void ShouldThrowExceptionWhenVacationNotExist()
         {
-            Func<Vacation> deleteVacation = () => EmployeeService.DeleteVacation(employeeId, 1);
+            var vacationId = 1;
+            Func<Vacation> deleteVacation = () => EmployeeService.DeleteVacation(employeeId, vacationId);
 
-            deleteVacation.Should().Throw<VacationNotFoundException>();
+            deleteVacation.Should().Throw<NotFoundException>()
+                .WithMessage($"Vacation with id = {vacationId} not found");
         }
     }
 }

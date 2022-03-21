@@ -4,6 +4,7 @@ using System.Linq;
 using VacationPlanner.Constants;
 using VacationPlanner.DataAccess;
 using VacationPlanner.DataAccess.Models;
+using VacationPlanner.Exceptions;
 
 namespace VacationPlanner.xUnitTests.Stubs
 {
@@ -36,7 +37,17 @@ namespace VacationPlanner.xUnitTests.Stubs
 
         public DataEmployee GetEmployee(int employeeId)
         {
-            return Employees.Single(employee => employee.Id == employeeId);
+            DataEmployee employee;
+            try
+            {
+                employee = Employees.Single(employee => employee.Id == employeeId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
+            }
+
+            return employee;
         }
     }
 }
