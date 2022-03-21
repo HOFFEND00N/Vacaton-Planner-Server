@@ -14,19 +14,19 @@ namespace VacationPlanner.xUnitTests
 {
     public class EmployeeServiceAddVacation
     {
-        DateTime currentDate;
+        private DateTime currentDate;
         private EmployeeService employeeService;
         private StubDbService StubDbService;
         private int employeeId = 0;
+
 
         public EmployeeServiceAddVacation()
         {
             currentDate = DateTime.Now;
             StubDbService = new StubDbService(new List<DataEmployee>());
-            employeeService =
-                new EmployeeService(
-                    StubDbService);
-            StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>()));
+            employeeService = new EmployeeService(StubDbService);
+            StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>(),
+                EmployeeRole.SoftwareEngineer));
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace VacationPlanner.xUnitTests
         {
             var vacationStartDate = currentDate.AddDays(14);
             var vacationEndDate = currentDate.AddDays(21);
-            var expectedVacation = new Vacation(vacationStartDate, vacationEndDate, VacationState.Pending);
+            var expectedVacation = new Vacation(vacationStartDate, vacationEndDate);
 
             var actualVacation = employeeService.AddVacation(employeeId, vacationStartDate, vacationEndDate);
 
@@ -43,8 +43,8 @@ namespace VacationPlanner.xUnitTests
                                     DateTime.Compare(vacationEndDate, vacation.End) == 0);
 
             expectedVacation.Should().BeEquivalentTo(actualVacation);
-            expectedVacation.Should().BeEquivalentTo(new Vacation(actualVacationInStub.Start, actualVacationInStub.End,
-                actualVacationInStub.State));
+            expectedVacation.Should()
+                .BeEquivalentTo(new Vacation(actualVacationInStub.Start, actualVacationInStub.End));
         }
 
         [Fact]
@@ -53,9 +53,10 @@ namespace VacationPlanner.xUnitTests
             var vacationStartDate = currentDate.AddDays(15);
             var vacationEndDate = currentDate.AddDays(1);
 
-            Func<Vacation> action = () => employeeService.AddVacation(employeeId, vacationStartDate, vacationEndDate);
+            Func<Vacation> addVacation =
+                () => employeeService.AddVacation(employeeId, vacationStartDate, vacationEndDate);
 
-            action.Should().Throw<InvalidVacationDatesException>();
+            addVacation.Should().Throw<InvalidVacationDatesException>();
         }
 
         [Fact]
@@ -64,9 +65,10 @@ namespace VacationPlanner.xUnitTests
             var vacationStartDate = currentDate.AddDays(1);
             var vacationEndDate = currentDate.AddYears(5);
 
-            Func<Vacation> action = () => employeeService.AddVacation(employeeId, vacationStartDate, vacationEndDate);
+            Func<Vacation> addVacation =
+                () => employeeService.AddVacation(employeeId, vacationStartDate, vacationEndDate);
 
-            action.Should().Throw<InvalidVacationDatesException>();
+            addVacation.Should().Throw<InvalidVacationDatesException>();
         }
 
         [Fact]
@@ -74,10 +76,10 @@ namespace VacationPlanner.xUnitTests
         {
             var vacationStartDate = currentDate.AddDays(6);
 
-            Func<Vacation> action = () =>
+            Func<Vacation> addVacation = () =>
                 employeeService.AddVacation(employeeId, vacationStartDate, vacationStartDate.AddDays(5));
 
-            action.Should().Throw<InvalidVacationDatesException>();
+            addVacation.Should().Throw<InvalidVacationDatesException>();
         }
 
         [Fact]
@@ -85,10 +87,10 @@ namespace VacationPlanner.xUnitTests
         {
             var vacationStartDate = currentDate.AddYears(1).AddDays(1);
 
-            Func<Vacation> action = () =>
+            Func<Vacation> addVacation = () =>
                 employeeService.AddVacation(employeeId, vacationStartDate, vacationStartDate.AddDays(5));
 
-            action.Should().Throw<InvalidVacationDatesException>();
+            addVacation.Should().Throw<InvalidVacationDatesException>();
         }
     }
 }

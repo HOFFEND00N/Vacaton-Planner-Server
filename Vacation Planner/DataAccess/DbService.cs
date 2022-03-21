@@ -58,11 +58,25 @@ namespace VacationPlanner.DataAccess
             return connection.QueryFirst<DataVacation>(query, new {vacationId});
         }
 
-        public DataVacation EditVacation(int vacationId, DateTime start, DateTime end, VacationState state)
+        public DataVacation EditVacation(int vacationId, DateTime start, DateTime end)
         {
-            const string query = "update Vacation set Start = @start, End = @end, State = @state where Id = @vacationId";
+            const string query = "update Vacation set Start = @start, End = @end where Id = @vacationId";
             using var connection = new SqlConnection(DbConnectionString);
-            return connection.QueryFirst<DataVacation>(query, new {start, end, state, vacationId});
+            return connection.QueryFirst<DataVacation>(query, new {start, end, vacationId});
+        }
+
+        public DataVacation GetVacation(int vacationId)
+        {
+            const string query = "select * from Vacation where Id = @vacationId";
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataVacation>(query, new {vacationId});
+        }
+
+        public DataVacation ChangeVacationState(int vacationId, VacationState state)
+        {
+            const string query = "update Vacation set State=@state where Id = @vacationId";
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataVacation>(query, new {state, vacationId});
         }
     }
 }

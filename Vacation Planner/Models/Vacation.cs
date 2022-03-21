@@ -8,10 +8,11 @@ namespace VacationPlanner.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public VacationState VacationState { get; set; }
-
-        public Vacation()
+        
+        public Vacation(DateTime start, DateTime end)
         {
-
+            Start = start;
+            End = end;
         }
 
         public Vacation(DateTime start, DateTime end, VacationState vacationState)

@@ -41,7 +41,7 @@ namespace VacationPlanner.xUnitTests.Stubs
             throw new NotFoundException($"vacation with id = {vacationId} not found");
         }
 
-        public DataVacation EditVacation(int vacationId, DateTime start, DateTime end, VacationState state)
+        public DataVacation EditVacation(int vacationId, DateTime start, DateTime end)
         {
             foreach (var employee in Employees)
             {
@@ -50,6 +50,20 @@ namespace VacationPlanner.xUnitTests.Stubs
                 {
                     vacation.Start = start;
                     vacation.End = end;
+                    return vacation;
+                }
+            }
+
+            throw new NotFoundException($"vacation with id = {vacationId} not found");
+        }
+
+        public DataVacation ChangeVacationState(int vacationId, VacationState state)
+        {
+            foreach (var employee in Employees)
+            {
+                var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
+                if (vacation != null)
+                {
                     vacation.State = state;
                     return vacation;
                 }

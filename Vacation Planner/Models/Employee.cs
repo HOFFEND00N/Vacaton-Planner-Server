@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VacationPlanner.Constants;
 
 namespace VacationPlanner.Models
 {
@@ -8,11 +9,14 @@ namespace VacationPlanner.Models
         public string Name { get; set; }
         public List<Vacation> Vacations { get; set; }
 
-        public Employee(int id, string name, List<Vacation> vacations)
+        public EmployeeRole Role { get; }
+
+        public Employee(int id, string name, List<Vacation> vacations, EmployeeRole role)
         {
             Id = id;
             Name = name;
             Vacations = vacations;
+            Role = role;
         }
     }
 }

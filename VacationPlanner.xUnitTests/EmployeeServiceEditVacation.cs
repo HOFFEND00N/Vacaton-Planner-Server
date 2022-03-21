@@ -14,7 +14,7 @@ namespace VacationPlanner.xUnitTests
     public class EmployeeServiceEditVacation
     {
         private DateTime currentDate;
-        private EmployeeService EmployeeService;
+        private EmployeeService employeeService;
         private StubDbService StubDbService;
         private int employeeId = 0;
         private int vacationId = 0;
@@ -23,10 +23,11 @@ namespace VacationPlanner.xUnitTests
         {
             currentDate = DateTime.Now;
             StubDbService = new StubDbService(new List<DataEmployee>());
-            EmployeeService =
+            employeeService =
                 new EmployeeService(
                     StubDbService);
-            StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>()));
+            StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>(),
+                EmployeeRole.SoftwareEngineer));
             StubDbService.Employees[0].Vacations.Add(new DataVacation(vacationId, currentDate.AddDays(10),
                 currentDate.AddDays(20),
                 VacationState.Pending, employeeId));
@@ -38,10 +39,10 @@ namespace VacationPlanner.xUnitTests
             var start = currentDate.AddDays(11);
             var end = currentDate.AddDays(21);
             var expectedVacation =
-                new Vacation(start, end, VacationState.Approved);
+                new Vacation(start, end);
 
-            var actualVacation = EmployeeService.EditVacation(employeeId, vacationId, start,
-                end, VacationState.Approved);
+            var actualVacation = employeeService.EditVacation(employeeId, vacationId, start,
+                end);
 
             actualVacation.Should().BeEquivalentTo(expectedVacation);
         }
@@ -50,42 +51,56 @@ namespace VacationPlanner.xUnitTests
         public void ShouldThrowExceptionWhenEmployeeNotFound()
         {
             var employeeId = 10;
-            Func<Vacation> editVacation = () => EmployeeService.EditVacation(employeeId, vacationId,
-                currentDate.AddDays(11), currentDate.AddDays(11), VacationState.Pending);
+            Func<Vacation> editVacation = () => employeeService.EditVacation(employeeId, vacationId,
+                currentDate.AddDays(11), currentDate.AddDays(11));
 
             editVacation.Should().Throw<NotFoundException>().WithMessage($"Employee with id = {employeeId} not found");
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenTryToChangeVacationStatusFromApproved()
+        public void ShouldThrowExceptionWhenEndDateLessThanStartDate()
         {
-            var vacationId = this.vacationId + 1;
-            StubDbService.Employees[0].Vacations.Add(new DataVacation(vacationId, currentDate.AddDays(10),
-                currentDate.AddDays(20),
-                VacationState.Approved, employeeId));
+            var vacationStartDate = currentDate.AddDays(15);
+            var vacationEndDate = currentDate.AddDays(1);
 
-            Func<Vacation> editVacation = () => EmployeeService.EditVacation(employeeId, vacationId,
-                currentDate.AddDays(10), currentDate.AddDays(20), VacationState.Pending);
+            Func<Vacation> editVacation = () =>
+                employeeService.EditVacation(employeeId, vacationId, vacationStartDate, vacationEndDate);
 
-            editVacation.Should().Throw<InvalidOperationException>()
-                .WithMessage(
-                    $"Can't change vacation state from Approved/Declined to anything else with id = {vacationId}");
+            editVacation.Should().Throw<InvalidVacationDatesException>();
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenTryToChangeVacationStatusFromDeclined()
+        public void ShouldThrowExceptionWhenVacationOverFourYears()
         {
-            var vacationId = this.vacationId + 1;
-            StubDbService.Employees[0].Vacations.Add(new DataVacation(vacationId, currentDate.AddDays(10),
-                currentDate.AddDays(20),
-                VacationState.Declined, employeeId));
+            var vacationStartDate = currentDate.AddDays(1);
+            var vacationEndDate = currentDate.AddYears(5);
 
-            Func<Vacation> editVacation = () => EmployeeService.EditVacation(employeeId, vacationId,
-                currentDate.AddDays(10), currentDate.AddDays(20), VacationState.Pending);
+            Func<Vacation> editVacation = () =>
+                employeeService.EditVacation(employeeId, vacationId, vacationStartDate, vacationEndDate);
 
-            editVacation.Should().Throw<InvalidOperationException>()
-                .WithMessage(
-                    $"Can't change vacation state from Approved/Declined to anything else with id = {vacationId}");
+            editVacation.Should().Throw<InvalidVacationDatesException>();
+        }
+
+        [Fact]
+        public void ShouldThrowExceptionWhenVacationStartDateLessThanCurrentDatePlusWeek()
+        {
+            var vacationStartDate = currentDate.AddDays(6);
+
+            Func<Vacation> editVacation = () =>
+                employeeService.EditVacation(employeeId, vacationId, vacationStartDate, vacationStartDate.AddDays(5));
+
+            editVacation.Should().Throw<InvalidVacationDatesException>();
+        }
+
+        [Fact]
+        public void ShouldThrowExceptionWhenVacationStartDateGreaterThanCurrentDateOverOneYear()
+        {
+            var vacationStartDate = currentDate.AddYears(1).AddDays(1);
+
+            Func<Vacation> editVacation = () =>
+                employeeService.EditVacation(employeeId, vacationId, vacationStartDate, vacationStartDate.AddDays(5));
+
+            editVacation.Should().Throw<InvalidVacationDatesException>();
         }
     }
 }

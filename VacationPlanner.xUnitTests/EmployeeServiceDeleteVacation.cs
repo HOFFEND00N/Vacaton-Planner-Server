@@ -26,7 +26,8 @@ namespace VacationPlanner.xUnitTests
             EmployeeService =
                 new EmployeeService(
                     StubDbService);
-            StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>()));
+            StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>(),
+                EmployeeRole.SoftwareEngineer));
             StubDbService.Employees[0].Vacations.Add(new DataVacation(0, currentDate.AddDays(10),
                 currentDate.AddDays(20),
                 VacationState.Pending, employeeId));
@@ -36,7 +37,7 @@ namespace VacationPlanner.xUnitTests
         public void ShouldDeleteVacation()
         {
             var expectedVacation =
-                new Vacation(currentDate.AddDays(10), currentDate.AddDays(20), VacationState.Pending);
+                new Vacation(currentDate.AddDays(10), currentDate.AddDays(20));
 
             var actualVacation = EmployeeService.DeleteVacation(employeeId, 0);
 
