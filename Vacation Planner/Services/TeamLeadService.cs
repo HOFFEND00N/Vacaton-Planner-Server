@@ -22,9 +22,21 @@ namespace VacationPlanner.Services
             {
                 throw new NotAllowedActionException("Can't approve/decline other employees vacations");
             }
-            //TODO: need vacation to get its owner -> get employee team => compare with user making decisions
-            //TODO: report a bug about => : concatenation of = and >
-            var vacation = DbService.ChangeVacationState(vacationId, VacationState.Approved);
+
+            var vacation = DbService.GetVacation(vacationId);
+            if (vacation.State != VacationState.Pending)
+            {
+                throw new NotAllowedActionException("Can't approve/decline vacations not in pending state");
+            }
+
+            var vacationOwner = DbService.GetEmployee(vacation.EmployeeId);
+
+            if (vacationOwner.TeamId != employee.TeamId)
+            {
+                throw new NotAllowedActionException("Can't approve/decline vacations in different team");
+            }
+
+            vacation = DbService.ChangeVacationState(vacationId, VacationState.Approved);
             return new Vacation(vacation.Start, vacation.End, vacation.State);
         }
     }

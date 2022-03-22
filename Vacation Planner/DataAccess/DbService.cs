@@ -78,5 +78,12 @@ namespace VacationPlanner.DataAccess
             using var connection = new SqlConnection(DbConnectionString);
             return connection.Query<DataEmployee>(query, new {teamId}).ToList();
         }
+
+        public DataVacation GetVacation(int vacationId)
+        {
+            const string query = "select * from Vacation where Id = @vacationId";
+            using var connection = new SqlConnection(DbConnectionString);
+            return connection.QueryFirst<DataVacation>(query, new {vacationId});
+        }
     }
 }

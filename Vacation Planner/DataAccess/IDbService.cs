@@ -13,5 +13,6 @@ namespace VacationPlanner.DataAccess
         DataVacation EditVacation(int vacationId, DateTime start, DateTime end);
         DataVacation ChangeVacationState(int vacationId, VacationState state);
         List<DataEmployee> GetTeamMembers(int teamId);
+        DataVacation GetVacation(int vacationId);
     }
 }

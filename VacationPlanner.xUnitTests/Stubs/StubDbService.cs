@@ -77,6 +77,20 @@ namespace VacationPlanner.xUnitTests.Stubs
             return Employees.Where(employee => employee.TeamId == teamId).ToList();
         }
 
+        public DataVacation GetVacation(int vacationId)
+        {
+            foreach (var employee in Employees)
+            {
+                var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
+                if (vacation != null)
+                {
+                    return vacation;
+                }
+            }
+
+            throw new NotFoundException($"vacation with id = {vacationId} not found");
+        }
+
         public DataEmployee GetEmployee(int employeeId)
         {
             DataEmployee employee;
