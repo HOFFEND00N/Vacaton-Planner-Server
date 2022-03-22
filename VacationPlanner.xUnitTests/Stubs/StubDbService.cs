@@ -43,33 +43,17 @@ namespace VacationPlanner.xUnitTests.Stubs
 
         public DataVacation EditVacation(int vacationId, DateTime start, DateTime end)
         {
-            foreach (var employee in Employees)
-            {
-                var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
-                if (vacation != null)
-                {
-                    vacation.Start = start;
-                    vacation.End = end;
-                    return vacation;
-                }
-            }
-
-            throw new NotFoundException($"vacation with id = {vacationId} not found");
+            var vacation = GetVacation(vacationId);
+            vacation.Start = start;
+            vacation.End = end;
+            return vacation;
         }
 
         public DataVacation ChangeVacationState(int vacationId, VacationState state)
         {
-            foreach (var employee in Employees)
-            {
-                var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
-                if (vacation != null)
-                {
-                    vacation.State = state;
-                    return vacation;
-                }
-            }
-
-            throw new NotFoundException($"vacation with id = {vacationId} not found");
+            var vacation = GetVacation(vacationId);
+            vacation.State = state;
+            return vacation;
         }
 
         public List<DataEmployee> GetTeamMembers(int teamId)
