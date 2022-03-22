@@ -47,7 +47,7 @@ namespace VacationPlanner.xUnitTests
             Func<Vacation> approveVacation = () => teamLeadService.Approve(0, 0);
 
             approveVacation.Should().Throw<NotAllowedActionException>()
-                .WithMessage("Can't approve/decline other employees vacations");
+                .WithMessage("Can't approve/decline vacations because you are not teamLead");
         }
         
         [Fact]

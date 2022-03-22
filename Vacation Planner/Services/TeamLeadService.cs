@@ -20,7 +20,7 @@ namespace VacationPlanner.Services
             var employee = DbService.GetEmployee(employeeId);
             if (employee.Role != EmployeeRole.TeamLead)
             {
-                throw new NotAllowedActionException("Can't approve/decline other employees vacations");
+                throw new NotAllowedActionException("Can't approve/decline vacations because you are not teamLead");
             }
 
             var vacation = DbService.GetVacation(vacationId);
