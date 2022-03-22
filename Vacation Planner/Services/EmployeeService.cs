@@ -17,11 +17,7 @@ namespace VacationPlanner.Services
 
         public Vacation AddVacation(int employeeId, DateTime start, DateTime end)
         {
-            if (DateTime.Compare(start, end) > 0 || (end - start).TotalDays > 365 * 4 ||
-                DateTime.Compare(start, DateTime.Now.AddDays(7)) < 0 || (start - DateTime.Now).TotalDays > 365)
-            {
-                throw new InvalidVacationDatesException();
-            }
+            ValidateVacationDates(start, end);
 
             var vacation = DbService.AddVacation(employeeId, start, end);
             return new Vacation(vacation.Start, vacation.End);
@@ -49,11 +45,7 @@ namespace VacationPlanner.Services
 
         public Vacation EditVacation(int employeeId, int vacationId, DateTime start, DateTime end)
         {
-            if (DateTime.Compare(start, end) > 0 || (end - start).TotalDays > 365 * 4 ||
-                DateTime.Compare(start, DateTime.Now.AddDays(7)) < 0 || (start - DateTime.Now).TotalDays > 365)
-            {
-                throw new InvalidVacationDatesException();
-            }
+            ValidateVacationDates(start, end);
             var employee = DbService.GetEmployee(employeeId);
             var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
             if (vacation == null)
@@ -63,6 +55,15 @@ namespace VacationPlanner.Services
 
             var updatedVacation = DbService.EditVacation(vacationId, start, end);
             return new Vacation(updatedVacation.Start, updatedVacation.End);
+        }
+
+        private void ValidateVacationDates(DateTime start, DateTime end)
+        {
+            if (DateTime.Compare(start, end) > 0 || (end - start).TotalDays > 365 * 4 ||
+                DateTime.Compare(start, DateTime.Now.AddDays(7)) < 0 || (start - DateTime.Now).TotalDays > 365)
+            {
+                throw new InvalidVacationDatesException();
+            }
         }
     }
 }
