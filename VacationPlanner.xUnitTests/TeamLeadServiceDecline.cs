@@ -11,13 +11,13 @@ using Xunit;
 
 namespace VacationPlanner.xUnitTests
 {
-    public class TeamLeadServiceApprove
+    public class TeamLeadServiceDecline
     {
         private StubDbService StubDbService;
         private DateTime currentDate;
         private TeamLeadService teamLeadService;
 
-        public TeamLeadServiceApprove()
+        public TeamLeadServiceDecline()
         {
             currentDate = DateTime.Now;
             StubDbService = new StubDbService(new List<DataEmployee>());
@@ -31,46 +31,46 @@ namespace VacationPlanner.xUnitTests
         }
 
         [Fact]
-        public void ShouldApproveVacation()
+        public void ShouldDeclineVacation()
         {
             var expectedVacation =
-                new Vacation(currentDate.AddDays(10), currentDate.AddDays(20), VacationState.Approved);
+                new Vacation(currentDate.AddDays(10), currentDate.AddDays(20), VacationState.Declined);
 
-            var actualVacation = teamLeadService.Approve(1, 0);
+            var actualVacation = teamLeadService.Decline(1, 0);
 
             actualVacation.Should().BeEquivalentTo(expectedVacation);
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenNotTeamLeadTryingToApproveVacation()
+        public void ShouldThrowExceptionWhenNotTeamLeadTryingToDeclineVacation()
         {
-            Func<Vacation> approveVacation = () => teamLeadService.Approve(0, 0);
+            Func<Vacation> declineVacation = () => teamLeadService.Decline(0, 0);
 
-            approveVacation.Should().Throw<NotAllowedActionException>()
+            declineVacation.Should().Throw<NotAllowedActionException>()
                 .WithMessage("Can't change vacation state because you are not teamLead");
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenTeamLeadTryToApproveVacationFromDifferentTeam()
+        public void ShouldThrowExceptionWhenTeamLeadTryToDeclineVacationFromDifferentTeam()
         {
             StubDbService.Employees.Add(new DataEmployee(2, "user 2", new List<DataVacation>(),
                 EmployeeRole.SoftwareEngineer, 1));
             StubDbService.Employees[2].Vacations.Add(new DataVacation(1, currentDate.AddDays(20),
                 currentDate.AddDays(30), VacationState.Pending, 2));
-            Func<Vacation> approveVacation = () => teamLeadService.Approve(1, 1);
+            Func<Vacation> declineVacation = () => teamLeadService.Decline(1, 1);
 
-            approveVacation.Should().Throw<NotAllowedActionException>()
+            declineVacation.Should().Throw<NotAllowedActionException>()
                 .WithMessage("Can't change vacation state because it is a vacation of an employee from another team");
         }
 
         [Fact]
-        public void ShouldThrowExceptionWhenTeamLeadTryToApproveVacationNotInPendingState()
+        public void ShouldThrowExceptionWhenTeamLeadTryToDeclineVacationNotInPendingState()
         {
             StubDbService.Employees[0].Vacations.Add(new DataVacation(1, currentDate.AddDays(20),
                 currentDate.AddDays(30), VacationState.Approved, 0));
-            Func<Vacation> approveVacation = () => teamLeadService.Approve(1, 1);
+            Func<Vacation> declineVacation = () => teamLeadService.Decline(1, 1);
 
-            approveVacation.Should().Throw<NotAllowedActionException>()
+            declineVacation.Should().Throw<NotAllowedActionException>()
                 .WithMessage("Can't change vacation state because vacation is not in pending state");
         }
     }
