@@ -23,9 +23,9 @@ namespace VacationPlanner.xUnitTests
                 new TeamService(
                     StubDbService);
             StubDbService.Employees.Add(new DataEmployee(0, "user 0", new List<DataVacation>(),
-                EmployeeRole.SoftwareEngineer));
+                EmployeeRole.SoftwareEngineer, 0));
             StubDbService.Employees.Add(new DataEmployee(1, "user 1", new List<DataVacation>(),
-                EmployeeRole.TeamLead));
+                EmployeeRole.TeamLead, 0));
         }
 
         [Fact]

@@ -12,12 +12,13 @@ namespace VacationPlanner.DataAccess.Models
         public IDbService DbHelper { get; set; }
         public EmployeeRole Role { get; }
 
-        public DataEmployee(int id, string name, List<DataVacation> vacations, EmployeeRole role)
+        public DataEmployee(int id, string name, List<DataVacation> vacations, EmployeeRole role, int teamId)
         {
             Id = id;
             Name = name;
             Vacations = vacations;
             Role = role;
+            TeamId = teamId;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace VacationPlanner.xUnitTests
             StubDbService = new StubDbService(new List<DataEmployee>());
             employeeService = new EmployeeService(StubDbService);
             StubDbService.Employees.Add(new DataEmployee(employeeId, "test name", new List<DataVacation>(),
-                EmployeeRole.SoftwareEngineer));
+                EmployeeRole.SoftwareEngineer, 0));
         }
 
         [Fact]

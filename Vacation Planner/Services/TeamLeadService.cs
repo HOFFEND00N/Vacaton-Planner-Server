@@ -1,4 +1,5 @@
-﻿using VacationPlanner.Constants;
+﻿using System;
+using VacationPlanner.Constants;
 using VacationPlanner.DataAccess;
 using VacationPlanner.Exceptions;
 using VacationPlanner.Models;
@@ -21,7 +22,8 @@ namespace VacationPlanner.Services
             {
                 throw new NotAllowedActionException("Can't approve/decline other employees vacations");
             }
-
+            //TODO: need vacation to get its owner -> get employee team => compare with user making decisions
+            //TODO: report a bug about => : concatenation of = and >
             var vacation = DbService.ChangeVacationState(vacationId, VacationState.Approved);
             return new Vacation(vacation.Start, vacation.End, vacation.State);
         }
