@@ -66,9 +66,15 @@ namespace VacationPlanner.DataAccess
 
         public List<DataEmployee> GetTeamMembers(int teamId)
         {
-            const string query = "select * from Employee where TeamId = @teamId";
-            using var connection = new SqlConnection(DbConnectionString);
-            return connection.Query<DataEmployee>(query, new {teamId}).ToList();
+            const string query =
+                "select * from Employee join Vacation on Employee.Id = Vacation.EmployeeId where TeamId = @teamId";
+            using var connection = new SqlConnection(_dbConnectionString);
+            return connection.Query<DataEmployee, DataVacation, DataEmployee>(query, (employee, vacation) =>
+            {
+                employee.Vacations = new List<DataVacation>();
+                employee.Vacations.Add(vacation);
+                return employee;
+            }, splitOn: "TeamId", param: new {teamId}).ToList();
         }
 
         public DataVacation GetVacation(int vacationId)
