@@ -69,12 +69,19 @@ namespace VacationPlanner.DataAccess
             const string query =
                 "select * from Employee join Vacation on Employee.Id = Vacation.EmployeeId where TeamId = @teamId";
             using var connection = new SqlConnection(_dbConnectionString);
-            return connection.Query<DataEmployee, DataVacation, DataEmployee>(query, (employee, vacation) =>
+            var result = connection.Query<DataEmployee, DataVacation, DataEmployee>(query, (employee, vacation) =>
             {
                 employee.Vacations = new List<DataVacation>();
                 employee.Vacations.Add(vacation);
                 return employee;
-            }, splitOn: "TeamId", param: new {teamId}).ToList();
+            }, splitOn: "TeamId", param: new {teamId});
+
+            return result.GroupBy(employee => employee.Id).Select(groupedEmployee =>
+            {
+                var employee = groupedEmployee.First();
+                employee.Vacations = groupedEmployee.Select(employee => employee.Vacations.Single()).ToList();
+                return employee;
+            }).ToList();
         }
 
         public DataVacation GetVacation(int vacationId)
