@@ -56,9 +56,9 @@ namespace VacationPlanner.xUnitTests.Stubs
             return vacation;
         }
 
-        public List<DataEmployee> GetTeamMembers(int teamId)
+        public IEnumerable<DataEmployee> GetTeamMembers(int teamId)
         {
-            return Employees.Where(employee => employee.TeamId == teamId).ToList();
+            return Employees.Where(employee => employee.TeamId == teamId);
         }
 
         public DataVacation GetVacation(int vacationId)

@@ -64,7 +64,7 @@ namespace VacationPlanner.DataAccess
             return connection.QueryFirst<DataVacation>(query, new {state, vacationId});
         }
 
-        public List<DataEmployee> GetTeamMembers(int teamId)
+        public IEnumerable<DataEmployee> GetTeamMembers(int teamId)
         {
             const string query =
                 "select * from Employee left join Vacation on Employee.Id = Vacation.EmployeeId where TeamId = @teamId";
