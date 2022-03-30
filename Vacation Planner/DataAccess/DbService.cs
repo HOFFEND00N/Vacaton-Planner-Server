@@ -20,17 +20,18 @@ namespace VacationPlanner.DataAccess
 
         public DataEmployee GetEmployee(int employeeId)
         {
-            const string query = "select * from Employee where Id=@Id";
+            const string query = "select * from Employee where Id=@id";
             using var connection = new SqlConnection(_dbConnectionString);
             var employee = connection.QueryFirst<DataEmployee>(query, new {id = employeeId});
 
+            employee.Vacations = new List<DataVacation>();
             employee.Vacations.AddRange(GetEmployeeVacations(employeeId, connection));
             return employee;
         }
 
         private List<DataVacation> GetEmployeeVacations(int employeeId, SqlConnection connection)
         {
-            const string query = "select * from Vacation where EmployeeId = @EmployeeId";
+            const string query = "select * from Vacation where EmployeeId = @employeeId";
             return connection.Query<DataVacation>(query, new {employeeId}).ToList();
         }
 

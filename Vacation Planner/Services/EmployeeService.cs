@@ -6,7 +6,7 @@ using VacationPlanner.Models;
 
 namespace VacationPlanner.Services
 {
-    public class EmployeeService
+    public class EmployeeService : IEmployeeService
     {
         private IDbService DbService { get; set; }
 

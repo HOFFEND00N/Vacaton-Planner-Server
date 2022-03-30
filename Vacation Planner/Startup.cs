@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VacationPlanner.DataAccess;
+using VacationPlanner.Services;
 
 namespace VacationPlanner
 {
@@ -26,15 +27,15 @@ namespace VacationPlanner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Vacation_Planner", Version = "v1" });
             });
 
-            //services.AddSingleton<IConfiguration>(provider => Configuration);
+            services.AddSingleton(_ => Configuration);
             services.AddScoped<IDbService, DbService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,10 +48,10 @@ namespace VacationPlanner
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Vacation_Planner v1"));
             }
 
+            app.UseStatusCodePages();
             app.UseRouting();
 
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
