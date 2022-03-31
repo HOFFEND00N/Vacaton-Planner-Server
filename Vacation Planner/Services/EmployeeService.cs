@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using VacationPlanner.DataAccess;
+using VacationPlanner.DataAccess.Models;
 using VacationPlanner.Exceptions;
 using VacationPlanner.Models;
 
@@ -37,7 +38,16 @@ namespace VacationPlanner.Services
 
         public Employee GetEmployee(int employeeId)
         {
-            var employee = DbService.GetEmployee(employeeId);
+            DataEmployee employee;
+            try
+            {
+                employee = DbService.GetEmployee(employeeId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Empployee with id = {employeeId} not found");
+            }
+
             var vacations = employee.Vacations.Select(vacation =>
                 new Vacation(vacation.Start, vacation.End)).ToList();
             return new Employee(employee.Id, employee.Name, vacations, employee.Role);

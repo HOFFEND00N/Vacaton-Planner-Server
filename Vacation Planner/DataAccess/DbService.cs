@@ -73,6 +73,7 @@ namespace VacationPlanner.DataAccess
             var result = connection.Query<DataEmployee, DataVacation, DataEmployee>(query, (employee, vacation) =>
             {
                 employee.Vacations = new List<DataVacation>();
+                //problem: replaced null from query with some default value for missing vacation
                 employee.Vacations.Add(vacation);
                 return employee;
             }, splitOn: "TeamId", param: new {teamId});

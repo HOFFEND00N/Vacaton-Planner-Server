@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using VacationPlanner.Exceptions;
 using VacationPlanner.Services;
 
 namespace VacationPlanner.Controllers
@@ -9,10 +10,12 @@ namespace VacationPlanner.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService employeeService;
+        private readonly ITeamService teamService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, ITeamService teamService)
         {
             this.employeeService = employeeService;
+            this.teamService = teamService;
         }
 
         [HttpGet("{id:int}")]
@@ -24,9 +27,24 @@ namespace VacationPlanner.Controllers
 
                 return Ok(employee);
             }
-            catch (Exception e)
+            catch (NotFoundException e)
             {
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("{employeeId:int}/team")]
+        public IActionResult GetTeam(int employeeId)
+        {
+            try
+            {
+                var team = teamService.GetEmployeeTeam(employeeId);
+
+                return Ok(team);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
     }

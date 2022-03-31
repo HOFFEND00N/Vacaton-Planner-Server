@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using VacationPlanner.DataAccess;
+using VacationPlanner.DataAccess.Models;
+using VacationPlanner.Exceptions;
 using VacationPlanner.Models;
 
 namespace VacationPlanner.Services
 {
-    public class TeamService
+    public class TeamService: ITeamService
     {
         private IDbService DbService { get; set; }
 
@@ -16,7 +19,15 @@ namespace VacationPlanner.Services
 
         public List<Employee> GetEmployeeTeam(int employeeId)
         {
-            var employee = DbService.GetEmployee(employeeId);
+            DataEmployee employee;
+            try
+            {
+                employee = DbService.GetEmployee(employeeId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Empployee with id = {employeeId} not found");
+            }
             var dataTeam = DbService.GetTeamMembers(employee.TeamId);
 
             return dataTeam.Select(employee =>
