@@ -68,22 +68,33 @@ namespace VacationPlanner.DataAccess
         public IEnumerable<DataEmployee> GetTeamMembers(int teamId)
         {
             const string query =
-                "select * from Employee left join Vacation on Employee.Id = Vacation.EmployeeId where TeamId = @teamId";
+                "select e.Id as EmployeeId, Name, TeamId, Role, v.Id as VacationId, \"Start\", \"End\", State, v.EmployeeId as VacationEmployeeId from Employee  as e left join Vacation as v on e.Id = v.EmployeeId where TeamId = 0";
             using var connection = new SqlConnection(_dbConnectionString);
-            var result = connection.Query<DataEmployee, DataVacation, DataEmployee>(query, (employee, vacation) =>
-            {
-                employee.Vacations = new List<DataVacation>();
-                //problem: replaced null from query with some default value for missing vacation
-                employee.Vacations.Add(vacation);
-                return employee;
-            }, splitOn: "TeamId", param: new {teamId});
+            var result = connection.Query<DataEmployeeAndDataVacation>(query, new {teamId});
 
-            return result.GroupBy(employee => employee.Id).Select(groupedEmployee =>
+            List<DataEmployee> employees = new List<DataEmployee>();
+            foreach (var employeeAndVacation in result)
             {
-                var employee = groupedEmployee.First();
-                employee.Vacations = groupedEmployee.Select(employee => employee.Vacations.Single()).ToList();
-                return employee;
-            });
+                var employee = employees.Find(employee => employee.Id == employeeAndVacation.EmployeeId);
+                if (employee == null)
+                {
+                    employee = new DataEmployee(employeeAndVacation.EmployeeId,
+                        employeeAndVacation.Name, new List<DataVacation>(),
+                        employeeAndVacation.Role, employeeAndVacation.TeamId);
+                    employees.Add(employee);
+                }
+
+                if (employeeAndVacation.VacationId.HasValue && employeeAndVacation.Start.HasValue &&
+                    employeeAndVacation.End.HasValue && employeeAndVacation.State.HasValue &&
+                    employeeAndVacation.VacationEmployeeId.HasValue)
+                {
+                    employee.Vacations.Add(new DataVacation(employeeAndVacation.VacationId.Value,
+                        employeeAndVacation.Start.Value, employeeAndVacation.End.Value,
+                        employeeAndVacation.State.Value, employeeAndVacation.VacationEmployeeId.Value));
+                }
+            }
+
+            return employees;
         }
 
         public DataVacation GetVacation(int vacationId)
