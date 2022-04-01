@@ -52,10 +52,13 @@ namespace VacationPlanner.DataAccess
 
         public DataVacation EditVacation(int vacationId, DateTime start, DateTime end)
         {
-            const string query =
-                "update Vacation output inserted.* set Start = @start, End = @end where Id = @vacationId";
+            const string updateQuery =
+                "update Vacation set Start = @start, [End] = @end where Id = @vacationId";
             using var connection = new SqlConnection(_dbConnectionString);
-            return connection.QueryFirst<DataVacation>(query, new {start, end, vacationId});
+            connection.Query(updateQuery, new {start, end, vacationId});
+
+            const string selectQuery = "select * from Vacation where Id = @vacationId";
+            return connection.QueryFirst<DataVacation>(selectQuery, new {vacationId});
         }
 
         public DataVacation ChangeVacationState(int vacationId, VacationState state)

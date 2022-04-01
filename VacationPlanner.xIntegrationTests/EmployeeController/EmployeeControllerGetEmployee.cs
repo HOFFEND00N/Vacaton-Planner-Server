@@ -35,7 +35,7 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
         [Fact]
         public async void ShouldReturnNotFoundResultWhenRequestForNonExistingEmployee()
         {
-            var response = await HttpClient.GetAsync("Employee/2");
+            var response = await HttpClient.GetAsync("Employee/100");
 
             response.StatusCode
                 .Should().Be(HttpStatusCode.NotFound);
