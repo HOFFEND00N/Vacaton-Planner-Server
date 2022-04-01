@@ -45,7 +45,7 @@ namespace VacationPlanner.Services
             }
             catch (InvalidOperationException)
             {
-                throw new NotFoundException($"Empployee with id = {employeeId} not found");
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
             }
 
             var vacations = employee.Vacations.Select(vacation =>
@@ -56,7 +56,16 @@ namespace VacationPlanner.Services
         public Vacation EditVacation(int employeeId, int vacationId, DateTime start, DateTime end)
         {
             ValidateVacationDates(start, end);
-            var employee = DbService.GetEmployee(employeeId);
+            DataEmployee employee;
+            try
+            {
+                employee = DbService.GetEmployee(employeeId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
+            }
+            
             var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
             if (vacation == null)
             {

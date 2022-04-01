@@ -29,7 +29,6 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
             {
                 Start = DateTime.Now.AddDays(10),
                 End = DateTime.Now.AddDays(20),
-                VacationState = VacationState.Pending
             };
             var content = new StringContent(
                 JsonSerializer.Serialize(expectedVacation),
@@ -44,6 +43,78 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
             vacation.End.Should().Be(expectedVacation.End.Date);
             vacation.Start.Should().Be(expectedVacation.Start.Date);
             vacation.VacationState.Should().Be(expectedVacation.VacationState);
+        }
+
+        [Fact]
+        public async void ShouldReturnNotFoundResultWhenRequestForNonExistentEmployee()
+        {
+            var expectedVacation = new Vacation
+            {
+                Start = DateTime.Now.AddDays(10),
+                End = DateTime.Now.AddDays(20)
+            };
+            var content = new StringContent(
+                JsonSerializer.Serialize(expectedVacation),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await HttpClient.PutAsync("Employee/100/vacation/1002", content);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async void ShouldReturnNotFoundResultWhenRequestForNonExistentVacation()
+        {
+            var expectedVacation = new Vacation
+            {
+                Start = DateTime.Now.AddDays(10),
+                End = DateTime.Now.AddDays(20),
+            };
+            var content = new StringContent(
+                JsonSerializer.Serialize(expectedVacation),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await HttpClient.PutAsync("Employee/1/vacation/100", content);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async void ShouldReturnNotFoundResultWhenRequestUrlParametersIsIncorrect()
+        {
+            var expectedVacation = new Vacation
+            {
+                Start = DateTime.Now.AddDays(10),
+                End = DateTime.Now.AddDays(20),
+            };
+            var content = new StringContent(
+                JsonSerializer.Serialize(expectedVacation),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await HttpClient.PutAsync("Employee/asd/vacation/def", content);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async void ShouldReturnBadRequestResultWhenVacationInBodyIsIncorrect()
+        {
+            var expectedVacation = new Vacation();
+            var content = new StringContent(
+                JsonSerializer.Serialize(expectedVacation),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await HttpClient.PutAsync("Employee/2/vacation/1002", content);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }
