@@ -19,7 +19,6 @@ namespace VacationPlanner.xUnitTests
         private StubDbService StubDbService;
         private int employeeId = 0;
 
-
         public EmployeeServiceAddVacation()
         {
             currentDate = DateTime.Now;

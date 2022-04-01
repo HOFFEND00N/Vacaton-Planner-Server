@@ -5,12 +5,11 @@ using System.Text;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
-using VacationPlanner.Constants;
 using VacationPlanner.Models;
 using Xunit;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace VacationPlanner.xIntegrationTests.EmployeeController
+namespace VacationPlanner.xIntegrationTests.VacationController
 {
     public class VacationControllerEditVacation
     {
@@ -39,10 +38,10 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
             var response = await HttpClient.PutAsync("Employee/2/vacation/1002", content);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var vacation = JsonConvert.DeserializeObject<Vacation>(response.Content.ReadAsStringAsync().Result);
-            vacation.End.Should().Be(expectedVacation.End.Date);
-            vacation.Start.Should().Be(expectedVacation.Start.Date);
-            vacation.VacationState.Should().Be(expectedVacation.VacationState);
+            var actualVacation = JsonConvert.DeserializeObject<Vacation>(response.Content.ReadAsStringAsync().Result);
+            actualVacation.End.Should().Be(expectedVacation.End.Date);
+            actualVacation.Start.Should().Be(expectedVacation.Start.Date);
+            actualVacation.VacationState.Should().Be(expectedVacation.VacationState);
         }
 
         [Fact]

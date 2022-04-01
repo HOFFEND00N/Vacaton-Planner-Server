@@ -19,6 +19,14 @@ namespace VacationPlanner.Services
         public Vacation AddVacation(int employeeId, DateTime start, DateTime end)
         {
             ValidateVacationDates(start, end);
+            try
+            {
+                DbService.GetEmployee(employeeId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
+            }
 
             var vacation = DbService.AddVacation(employeeId, start, end);
             return new Vacation(vacation.Start, vacation.End);
@@ -65,7 +73,7 @@ namespace VacationPlanner.Services
             {
                 throw new NotFoundException($"Employee with id = {employeeId} not found");
             }
-            
+
             var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
             if (vacation == null)
             {
