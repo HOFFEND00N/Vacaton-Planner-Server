@@ -86,6 +86,10 @@ namespace VacationPlanner.Controllers
       {
         return NotFound(e.Message);
       }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
+      }
     }
 
     [HttpPut("{vacationId:int}/decline")]
@@ -100,6 +104,10 @@ namespace VacationPlanner.Controllers
       catch (NotFoundException e)
       {
         return NotFound(e.Message);
+      }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
       }
     }
   }

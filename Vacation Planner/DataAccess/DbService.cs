@@ -57,9 +57,12 @@ namespace VacationPlanner.DataAccess
 
     public DataVacation ChangeVacationState(int vacationId, VacationState state)
     {
-      const string query = "update Vacation output inserted.* set State=@state where Id = @vacationId";
+      const string query = "update Vacation set State=@state where Id = @vacationId";
       using var connection = new SqlConnection(_dbConnectionString);
-      return connection.QueryFirst<DataVacation>(query, new {state, vacationId});
+      connection.Query(query, new {state, vacationId});
+
+      const string selectQuery = "select * from Vacation where Id = @vacationId";
+      return connection.QueryFirst<DataVacation>(selectQuery, new {vacationId});
     }
 
     public IEnumerable<DataEmployee> GetTeamMembers(int teamId)

@@ -1,5 +1,7 @@
-﻿using VacationPlanner.Constants;
+﻿using System;
+using VacationPlanner.Constants;
 using VacationPlanner.DataAccess;
+using VacationPlanner.DataAccess.Models;
 using VacationPlanner.Exceptions;
 using VacationPlanner.Models;
 
@@ -32,11 +34,30 @@ namespace VacationPlanner.Services
 
     private void Validate(int teamLeadId, int vacationId)
     {
-      var employee = DbService.GetEmployee(teamLeadId);
+      DataEmployee employee;
+      DataVacation vacation;
+
+      try
+      {
+        employee = DbService.GetEmployee(teamLeadId);
+      }
+      catch (InvalidOperationException)
+      {
+        throw new NotFoundException($"Employee with id = {teamLeadId} not found");
+      }
+
+      try
+      {
+        vacation = DbService.GetVacation(vacationId);
+      }
+      catch (InvalidOperationException)
+      {
+        throw new NotFoundException($"Vacation with id = {vacationId} not found");
+      }
+
       if (employee.Role != EmployeeRole.TeamLead)
         throw new NotAllowedActionException("Can't change vacation state because you are not teamLead");
 
-      var vacation = DbService.GetVacation(vacationId);
       if (vacation.State != VacationState.Pending)
         throw new NotAllowedActionException(
           "Can't change vacation state because vacation is not in pending state");

@@ -45,7 +45,9 @@ namespace VacationPlanner.Services
       }
 
       if (employee.Vacations.Count(vacation => vacation.Id == vacationId) != 1)
+      {
         throw new NotFoundException($"Vacation with id = {vacationId} not found");
+      }
 
       var deletedVacation = DbService.DeleteVacation(vacationId);
       return new Vacation(deletedVacation.Id, deletedVacation.Start, deletedVacation.End);
@@ -82,7 +84,10 @@ namespace VacationPlanner.Services
       }
 
       var vacation = employee.Vacations.FirstOrDefault(vacation => vacation.Id == vacationId);
-      if (vacation == null) throw new NotFoundException($"Vacation with id = {vacationId} not found");
+      if (vacation == null)
+      {
+        throw new NotFoundException($"Vacation with id = {vacationId} not found");
+      }
 
       var updatedVacation = DbService.EditVacation(vacationId, start, end);
       return new Vacation(updatedVacation.Id, updatedVacation.Start, updatedVacation.End);
