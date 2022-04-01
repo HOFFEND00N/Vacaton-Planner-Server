@@ -2,8 +2,8 @@
 
 namespace VacationPlanner.Models
 {
-    public class Team
-    {
-        public List<Employee> Employees { get; set; }
-    }
+  public class Team
+  {
+    public List<Employee> Employees { get; set; }
+  }
 }

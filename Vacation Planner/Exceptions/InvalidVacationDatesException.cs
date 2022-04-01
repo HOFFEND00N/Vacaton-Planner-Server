@@ -2,8 +2,7 @@
 
 namespace VacationPlanner.Exceptions
 {
-    public class InvalidVacationDatesException: Exception
-    {
-
-    }
+  public class InvalidVacationDatesException : Exception
+  {
+  }
 }

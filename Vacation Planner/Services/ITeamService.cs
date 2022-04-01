@@ -3,8 +3,8 @@ using VacationPlanner.Models;
 
 namespace VacationPlanner.Services
 {
-    public interface ITeamService
-    {
-        List<Employee> GetEmployeeTeam(int employeeId);
-    }
+  public interface ITeamService
+  {
+    List<Employee> GetEmployeeTeam(int employeeId);
+  }
 }

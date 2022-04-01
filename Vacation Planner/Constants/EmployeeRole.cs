@@ -1,8 +1,8 @@
 ﻿namespace VacationPlanner.Constants
 {
-    public enum EmployeeRole
-    {
-        TeamLead,
-        SoftwareEngineer
-    }
+  public enum EmployeeRole
+  {
+    TeamLead,
+    SoftwareEngineer
+  }
 }
