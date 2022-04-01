@@ -32,7 +32,7 @@ namespace VacationPlanner.xIntegrationTests.VacationController
                 "application/json"
             );
 
-            var response = await HttpClient.PostAsync("employee/0/vacation", content);
+            var response = await HttpClient.PostAsync("employee/2/vacation", content);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var actualVacation = JsonConvert.DeserializeObject<Vacation>(response.Content.ReadAsStringAsync().Result);

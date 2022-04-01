@@ -33,7 +33,7 @@ namespace VacationPlanner.xUnitTests
         {
             var vacationStartDate = currentDate.AddDays(14);
             var vacationEndDate = currentDate.AddDays(21);
-            var expectedVacation = new Vacation(vacationStartDate, vacationEndDate);
+            var expectedVacation = new Vacation(1, vacationStartDate, vacationEndDate, VacationState.Pending);
 
             var actualVacation = employeeService.AddVacation(employeeId, vacationStartDate, vacationEndDate);
 
@@ -41,9 +41,9 @@ namespace VacationPlanner.xUnitTests
                 .Single(vacation => DateTime.Compare(vacationStartDate, vacation.Start) == 0 &&
                                     DateTime.Compare(vacationEndDate, vacation.End) == 0);
 
-            expectedVacation.Should().BeEquivalentTo(actualVacation);
-            expectedVacation.Should()
-                .BeEquivalentTo(new Vacation(actualVacationInStub.Start, actualVacationInStub.End));
+            actualVacation.Should().BeEquivalentTo(expectedVacation);
+            new Vacation(actualVacationInStub.Id, actualVacationInStub.Start, actualVacationInStub.End,
+                actualVacationInStub.State).Should().BeEquivalentTo(expectedVacation);
         }
 
         [Fact]

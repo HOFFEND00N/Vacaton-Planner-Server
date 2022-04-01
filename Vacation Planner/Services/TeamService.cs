@@ -8,7 +8,7 @@ using VacationPlanner.Models;
 
 namespace VacationPlanner.Services
 {
-    public class TeamService: ITeamService
+    public class TeamService : ITeamService
     {
         private IDbService DbService { get; set; }
 
@@ -26,13 +26,15 @@ namespace VacationPlanner.Services
             }
             catch (InvalidOperationException)
             {
-                throw new NotFoundException($"Empployee with id = {employeeId} not found");
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
             }
+
             var dataTeam = DbService.GetTeamMembers(employee.TeamId);
 
             return dataTeam.Select(employee =>
                 new Employee(employee.Id, employee.Name,
-                    employee.Vacations.Select(vacation => new Vacation(vacation.Start, vacation.End, vacation.State))
+                    employee.Vacations.Select(vacation =>
+                            new Vacation(vacation.Id, vacation.Start, vacation.End, vacation.State))
                         .ToList(),
                     employee.Role)).ToList();
         }

@@ -56,5 +56,20 @@ namespace VacationPlanner.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpDelete("{vacationId:int}")]
+        public IActionResult DeleteVacation(int employeeId, int vacationId)
+        {
+            try
+            {
+                var deletedVacation = employeeService.DeleteVacation(employeeId, vacationId);
+
+                return Ok(deletedVacation);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }

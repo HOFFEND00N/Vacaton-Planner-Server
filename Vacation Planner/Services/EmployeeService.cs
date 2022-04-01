@@ -29,19 +29,28 @@ namespace VacationPlanner.Services
             }
 
             var vacation = DbService.AddVacation(employeeId, start, end);
-            return new Vacation(vacation.Start, vacation.End);
+            return new Vacation(vacation.Id, vacation.Start, vacation.End);
         }
 
         public Vacation DeleteVacation(int employeeId, int vacationId)
         {
-            var employee = DbService.GetEmployee(employeeId);
+            DataEmployee employee;
+            try
+            {
+                employee = DbService.GetEmployee(employeeId);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new NotFoundException($"Employee with id = {employeeId} not found");
+            }
+
             if (employee.Vacations.Count(vacation => vacation.Id == vacationId) != 1)
             {
                 throw new NotFoundException($"Vacation with id = {vacationId} not found");
             }
 
             var deletedVacation = DbService.DeleteVacation(vacationId);
-            return new Vacation(deletedVacation.Start, deletedVacation.End);
+            return new Vacation(deletedVacation.Id, deletedVacation.Start, deletedVacation.End);
         }
 
         public Employee GetEmployee(int employeeId)
@@ -57,7 +66,7 @@ namespace VacationPlanner.Services
             }
 
             var vacations = employee.Vacations.Select(vacation =>
-                new Vacation(vacation.Start, vacation.End)).ToList();
+                new Vacation(vacation.Id, vacation.Start, vacation.End)).ToList();
             return new Employee(employee.Id, employee.Name, vacations, employee.Role);
         }
 
@@ -81,7 +90,7 @@ namespace VacationPlanner.Services
             }
 
             var updatedVacation = DbService.EditVacation(vacationId, start, end);
-            return new Vacation(updatedVacation.Start, updatedVacation.End);
+            return new Vacation(updatedVacation.Id, updatedVacation.Start, updatedVacation.End);
         }
 
         private void ValidateVacationDates(DateTime start, DateTime end)

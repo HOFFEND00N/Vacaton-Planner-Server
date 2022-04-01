@@ -19,7 +19,7 @@ namespace VacationPlanner.Services
             Validate(teamLeadId, vacationId);
 
             var vacation = DbService.ChangeVacationState(vacationId, VacationState.Approved);
-            return new Vacation(vacation.Start, vacation.End, vacation.State);
+            return new Vacation(vacation.Id, vacation.Start, vacation.End, vacation.State);
         }
 
         public Vacation Decline(int teamLeadId, int vacationId)
@@ -27,7 +27,7 @@ namespace VacationPlanner.Services
             Validate(teamLeadId, vacationId);
 
             var vacation = DbService.ChangeVacationState(vacationId, VacationState.Declined);
-            return new Vacation(vacation.Start, vacation.End, vacation.State);
+            return new Vacation(vacation.Id, vacation.Start, vacation.End, vacation.State);
         }
 
         private void Validate(int teamLeadId, int vacationId)

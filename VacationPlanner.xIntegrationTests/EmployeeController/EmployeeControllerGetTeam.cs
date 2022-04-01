@@ -28,9 +28,9 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
             expecedTeam.Add(new Employee(0, "Vasya Ivanov", new List<Vacation>(), EmployeeRole.TeamLead));
             expecedTeam.Add(new Employee(1, "Petr Petrov", new List<Vacation>(), EmployeeRole.SoftwareEngineer));
             expecedTeam[0].Vacations
-                .Add(new Vacation(new DateTime(2020, 1, 1), new DateTime(2020, 2, 2), VacationState.Pending));
+                .Add(new Vacation(2, new DateTime(2020, 1, 1), new DateTime(2020, 2, 2), VacationState.Pending));
             expecedTeam[0].Vacations
-                .Add(new Vacation(new DateTime(2022, 3, 24), new DateTime(2022, 4, 3), VacationState.Pending));
+                .Add(new Vacation(3, new DateTime(2022, 3, 24), new DateTime(2022, 4, 3), VacationState.Pending));
 
             var response = await HttpClient.GetAsync("Employee/1/team");
 
