@@ -24,19 +24,19 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
     [Fact]
     public async void ShouldGetTeam()
     {
-      var expecedTeam = new List<Employee>();
-      expecedTeam.Add(new Employee(0, "Vasya Ivanov", new List<Vacation>(), EmployeeRole.TeamLead));
-      expecedTeam.Add(new Employee(1, "Petr Petrov", new List<Vacation>(), EmployeeRole.SoftwareEngineer));
-      expecedTeam[0].Vacations
+      var expectedTeam = new List<Employee>();
+      expectedTeam.Add(new Employee(0, "Vasya Ivanov", new List<Vacation>(), EmployeeRole.TeamLead));
+      expectedTeam.Add(new Employee(1, "Petr Petrov", new List<Vacation>(), EmployeeRole.SoftwareEngineer));
+      expectedTeam[0].Vacations
         .Add(new Vacation(2, new DateTime(2020, 1, 1), new DateTime(2020, 2, 2), VacationState.Pending));
-      expecedTeam[0].Vacations
+      expectedTeam[0].Vacations
         .Add(new Vacation(3, new DateTime(2022, 3, 24), new DateTime(2022, 4, 3), VacationState.Pending));
 
       var response = await HttpClient.GetAsync("Employee/1/team");
 
       response.StatusCode.Should().Be(HttpStatusCode.OK);
       var team = JsonConvert.DeserializeObject<List<Employee>>(await response.Content.ReadAsStringAsync());
-      team.Should().BeEquivalentTo(expecedTeam);
+      team.Should().BeEquivalentTo(expectedTeam);
     }
 
     [Fact]
