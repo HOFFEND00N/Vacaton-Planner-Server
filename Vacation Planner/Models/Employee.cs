@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using VacationPlanner.Constants;
 
 namespace VacationPlanner.Models
@@ -22,7 +20,6 @@ namespace VacationPlanner.Models
     public int Id { get; set; }
     public string Name { get; set; }
     public List<Vacation> Vacations { get; set; }
-    [JsonConverter(typeof(StringEnumConverter))]
-    public EmployeeRole Role { get; }
+    public EmployeeRole Role { get; set; }
   }
 }
