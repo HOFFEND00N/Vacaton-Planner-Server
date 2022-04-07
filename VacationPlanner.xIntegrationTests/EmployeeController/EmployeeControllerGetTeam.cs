@@ -1,38 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using Dapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using VacationPlanner.Constants;
+using VacationPlanner.DataAccess.Models;
 using VacationPlanner.Models;
 using Xunit;
 
 namespace VacationPlanner.xIntegrationTests.EmployeeController
 {
-  public class EmployeeControllerGetTeam
+  [Collection("CollectionForSequentialTestRunning")]
+  public class EmployeeControllerGetTeam : IDisposable
   {
     private readonly HttpClient HttpClient;
+    private List<Employee> _employees;
+    private List<DataVacation> _vacations;
+    private readonly string _connectionString;
 
     public EmployeeControllerGetTeam()
     {
       HttpClient = new WebApplicationFactory<Startup>().WithWebHostBuilder(_ => { })
         .CreateClient();
+
+      var basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
+      var configuration = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile("test_appsettings.json").Build();
+      _connectionString = configuration.GetConnectionString("DBConnectionString");
+
+      using var connection = new SqlConnection(_connectionString);
+      connection.Execute(DefaultSqlScripts.CreateEmployeeTestData());
+      connection.Execute(DefaultSqlScripts.CreateVacationTestData());
+      _employees = (List<Employee>) connection.Query<Employee>(DefaultSqlScripts.SelectEmployeeTestData());
+      _vacations = (List<DataVacation>) connection.Query<DataVacation>(DefaultSqlScripts.SelectVacationTestData());
     }
 
     [Fact]
     public async void ShouldGetTeam()
     {
       var expectedTeam = new List<Employee>();
-      expectedTeam.Add(new Employee(0, "Vasya Ivanov", new List<Vacation>(), EmployeeRole.TeamLead));
-      expectedTeam.Add(new Employee(1, "Petr Petrov", new List<Vacation>(), EmployeeRole.SoftwareEngineer));
-      expectedTeam[0].Vacations
-        .Add(new Vacation(2, new DateTime(2020, 1, 1), new DateTime(2020, 2, 2), VacationState.Pending));
-      expectedTeam[0].Vacations
-        .Add(new Vacation(3, new DateTime(2022, 3, 24), new DateTime(2022, 4, 3), VacationState.Pending));
+      _employees[0].Vacations = new List<Vacation>();
+      _employees[0].Vacations
+        .AddRange(_vacations.Where(vacation => vacation.EmployeeId == _employees[0].Id)
+          .Select(vacation => new Vacation(vacation.Id, vacation.Start, vacation.End, vacation.State)));
+      _employees[1].Vacations = new List<Vacation>();
+      expectedTeam.Add(_employees[0]);
+      expectedTeam.Add(_employees[1]);
 
-      var response = await HttpClient.GetAsync("Employee/1/team");
+      var response = await HttpClient.GetAsync($"Employee/{_employees[0].Id}/team");
 
       response.StatusCode.Should().Be(HttpStatusCode.OK);
       var team = JsonConvert.DeserializeObject<List<Employee>>(await response.Content.ReadAsStringAsync());
@@ -55,6 +75,13 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
 
       response.StatusCode
         .Should().Be(HttpStatusCode.NotFound);
+    }
+
+    public void Dispose()
+    {
+      using var connection = new SqlConnection(_connectionString);
+      connection.Execute(DefaultSqlScripts.DeleteVacationTestData());
+      connection.Execute(DefaultSqlScripts.DeleteEmployeeTestData());
     }
   }
 }

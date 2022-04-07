@@ -14,6 +14,7 @@ using Xunit;
 
 namespace VacationPlanner.xIntegrationTests.EmployeeController
 {
+  [Collection("CollectionForSequentialTestRunning")]
   public class EmployeeControllerGetEmployee : IDisposable
   {
     private readonly HttpClient HttpClient;
@@ -30,8 +31,8 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
       _connectionString = configuration.GetConnectionString("DBConnectionString");
 
       using var connection = new SqlConnection(_connectionString);
-      connection.Execute(DefaultSqlScripts.CreateEmployeeTestData);
-      _employees = (List<Employee>) connection.Query<Employee>(DefaultSqlScripts.SelectEmployeeTestData);
+      connection.Execute(DefaultSqlScripts.CreateEmployeeTestData());
+      _employees = (List<Employee>) connection.Query<Employee>(DefaultSqlScripts.SelectEmployeeTestData());
     }
 
     [Fact]
@@ -67,7 +68,7 @@ namespace VacationPlanner.xIntegrationTests.EmployeeController
     public void Dispose()
     {
       using var connection = new SqlConnection(_connectionString);
-      connection.Execute(DefaultSqlScripts.DeleteEmployeeTestData);
+      connection.Execute(DefaultSqlScripts.DeleteEmployeeTestData());
     }
   }
 }
