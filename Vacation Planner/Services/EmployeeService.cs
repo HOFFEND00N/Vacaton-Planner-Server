@@ -44,7 +44,7 @@ namespace VacationPlanner.Services
         throw new NotFoundException($"Employee with id = {employeeId} not found");
       }
 
-      if (employee.Vacations.Count(vacation => vacation.Id == vacationId) != 1)
+      if (employee.Vacations.Any(vacation => vacation.Id == vacationId) == false)
       {
         throw new NotFoundException($"Vacation with id = {vacationId} not found");
       }
