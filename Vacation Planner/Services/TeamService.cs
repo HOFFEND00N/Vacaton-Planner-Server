@@ -17,7 +17,7 @@ namespace VacationPlanner.Services
 
     private IDbService DbService { get; }
 
-    public List<Employee> GetEmployeeTeam(int employeeId)
+    public IReadOnlyCollection<Employee> GetEmployeeTeam(int employeeId)
     {
       DataEmployee employee;
       try

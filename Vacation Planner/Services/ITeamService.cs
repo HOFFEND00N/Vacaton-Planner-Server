@@ -5,6 +5,6 @@ namespace VacationPlanner.Services
 {
   public interface ITeamService
   {
-    List<Employee> GetEmployeeTeam(int employeeId);
+    IReadOnlyCollection<Employee> GetEmployeeTeam(int employeeId);
   }
 }
