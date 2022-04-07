@@ -23,6 +23,6 @@ namespace VacationPlanner.DataAccess.Models
     public List<DataVacation> Vacations { get; set; }
     public int TeamId { get; set; }
     public IDbService DbHelper { get; set; }
-    public EmployeeRole Role { get; }
+    public EmployeeRole Role { get; set; }
   }
 }
