@@ -94,6 +94,7 @@ namespace VacationPlanner.xIntegrationTests.VacationController
     public void Dispose()
     {
       using var connection = new SqlConnection(_connectionString);
+      connection.Execute(DefaultSqlScripts.DeleteVacationTestData());
       connection.Execute(DefaultSqlScripts.DeleteEmployeeTestData());
     }
   }
