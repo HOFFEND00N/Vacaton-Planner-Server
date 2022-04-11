@@ -17,22 +17,13 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 namespace VacationPlanner.xIntegrationTests.VacationController
 {
   [Collection("CollectionForSequentialTestRunning")]
-  public class VacationControllerAddVacation : IDisposable
+  public class VacationControllerAddVacation : ControllerTestBase, IDisposable
   {
-    private readonly HttpClient HttpClient;
-    private readonly string _connectionString;
     private readonly List<Employee> _employees;
 
     public VacationControllerAddVacation()
     {
-      HttpClient = new WebApplicationFactory<Startup>().WithWebHostBuilder(_ => { })
-        .CreateClient();
-
-      var basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
-      var configuration = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile("test_appsettings.json").Build();
-      _connectionString = configuration.GetConnectionString("DBConnectionString");
-
-      using var connection = new SqlConnection(_connectionString);
+      using var connection = new SqlConnection(ConnectionString);
       connection.Execute(DefaultSqlScripts.CreateEmployeeTestData());
       _employees = (List<Employee>) connection.Query<Employee>(DefaultSqlScripts.SelectEmployeeTestData());
     }
@@ -93,7 +84,7 @@ namespace VacationPlanner.xIntegrationTests.VacationController
 
     public void Dispose()
     {
-      using var connection = new SqlConnection(_connectionString);
+      using var connection = new SqlConnection(ConnectionString);
       connection.Execute(DefaultSqlScripts.DeleteVacationTestData());
       connection.Execute(DefaultSqlScripts.DeleteEmployeeTestData());
     }

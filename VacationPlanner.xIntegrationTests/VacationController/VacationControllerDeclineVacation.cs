@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using Dapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -19,22 +20,13 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 namespace VacationPlanner.xIntegrationTests.VacationController
 {
   [Collection("CollectionForSequentialTestRunning")]
-  public class VacationControllerDeclineVacation : IDisposable
+  public class VacationControllerDeclineVacation : ControllerTestBase, IDisposable
   {
-    private readonly HttpClient HttpClient;
-    private readonly string _connectionString;
     private readonly List<DataVacation> _vacations;
     
     public VacationControllerDeclineVacation()
     {
-      HttpClient = new WebApplicationFactory<Startup>().WithWebHostBuilder(_ => { })
-        .CreateClient();
-
-      var basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
-      var configuration = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile("test_appsettings.json").Build();
-      _connectionString = configuration.GetConnectionString("DBConnectionString");
-
-      using var connection = new SqlConnection(_connectionString);
+      using var connection = new SqlConnection(ConnectionString);
       connection.Execute(DefaultSqlScripts.CreateEmployeeTestData());
       connection.Execute(DefaultSqlScripts.CreateVacationTestData());
       _vacations = (List<DataVacation>) connection.Query<DataVacation>(DefaultSqlScripts.SelectVacationTestData());
@@ -82,7 +74,7 @@ namespace VacationPlanner.xIntegrationTests.VacationController
     
     public void Dispose()
     {
-      using var connection = new SqlConnection(_connectionString);
+      using var connection = new SqlConnection(ConnectionString);
       connection.Execute(DefaultSqlScripts.DeleteVacationTestData());
       connection.Execute(DefaultSqlScripts.DeleteEmployeeTestData());
     }
