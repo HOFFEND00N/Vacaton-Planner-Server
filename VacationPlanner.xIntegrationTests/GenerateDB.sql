@@ -1,5 +1,10 @@
-﻿create database [VacationPlanner]
+﻿IF DB_ID('VacationPlanner') IS NULL
+BEGIN
+create database [VacationPlanner]
+END
 
+IF NOT EXISTS (SELECT * FROM Employee)
+begin
 create table Employee
 (
     Id     int identity (1,1) not null
@@ -8,16 +13,20 @@ create table Employee
     TeamId int                not null,
     Role   int
 )
-go
+end
 
+IF NOT EXISTS (SELECT * FROM Team)
+begin
 create table Team
 (
     Id   int identity (1,1) not null
         primary key,
     Name nvarchar(100)      not null
 )
-go
+end
 
+IF NOT EXISTS (SELECT * FROM Vacation)
+begin
 create table Vacation
 (
     Id         int identity (1,1) not null
@@ -27,4 +36,4 @@ create table Vacation
     State      int                not null,
     EmployeeId int                not null
 )
-go
+end
