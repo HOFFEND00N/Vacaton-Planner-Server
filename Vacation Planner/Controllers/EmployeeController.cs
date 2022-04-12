@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using VacationPlanner.Exceptions;
+using VacationPlanner.Resources;
 using VacationPlanner.Services;
 
 namespace VacationPlanner.Controllers
@@ -8,13 +11,18 @@ namespace VacationPlanner.Controllers
   [Route("[controller]")]
   public class EmployeeController : ControllerBase
   {
-    private readonly IEmployeeService employeeService;
-    private readonly ITeamService teamService;
+    private readonly IEmployeeService _employeeService;
+    private readonly ITeamService _teamService;
+    private readonly ILogger<EmployeeController> _logger;
 
-    public EmployeeController(IEmployeeService employeeService, ITeamService teamService)
+    public EmployeeController(IEmployeeService employeeService, ITeamService teamService,
+      ILogger<EmployeeController> logger)
     {
-      this.employeeService = employeeService;
-      this.teamService = teamService;
+      _employeeService = employeeService;
+      _teamService = teamService;
+      _logger = logger;
+
+      _logger.LogTrace($"{nameof(EmployeeController)} created");
     }
 
     [HttpGet("{id:int}")]
@@ -22,12 +30,16 @@ namespace VacationPlanner.Controllers
     {
       try
       {
-        var employee = employeeService.GetEmployee(id);
+        _logger.LogTrace($"Receiving employee with id = {id}");
+
+        var employee = _employeeService.GetEmployee(id);
 
         return Ok(employee);
       }
       catch (NotFoundException e)
       {
+        _logger.LogError(e, e.Message);
+
         return NotFound(e.Message);
       }
     }
@@ -37,12 +49,16 @@ namespace VacationPlanner.Controllers
     {
       try
       {
-        var team = teamService.GetEmployeeTeam(employeeId);
+        _logger.LogTrace($"Receiving employee team with employeeId = {employeeId}");
+
+        var team = _teamService.GetEmployeeTeam(employeeId);
 
         return Ok(team);
       }
       catch (NotFoundException e)
       {
+        _logger.LogError(e, e.Message);
+
         return NotFound(e.Message);
       }
     }
