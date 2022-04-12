@@ -48,5 +48,50 @@
       return
         $"delete from [Vacation] where [EmployeeId] in (({firstEmployeeId}),({secondEmployeeId}),({thirdEmployeeId}))";
     }
+
+    public static string CreateDb()
+    {
+      return "IF DB_ID('VacationPlanner') IS NULL BEGIN create database [VacationPlanner] END";
+    }
+
+    public static string CreateTables()
+    {
+      return @"use VacationPlanner
+
+      if OBJECT_ID('Employee') is null
+      begin
+        create table Employee
+      (
+        Id     int identity (1,1) not null
+      primary key,
+        Name   nvarchar(200)      not null,
+        TeamId int                not null,
+        Role   int
+        )
+      end
+
+      if OBJECT_ID('Team') is null
+      begin
+        create table Team
+      (
+        Id   int identity (1,1) not null
+      primary key,
+        Name nvarchar(100)      not null
+        )
+      end
+
+      if OBJECT_ID('Vacation') is null
+      begin
+        create table Vacation
+      (
+        Id         int identity (1,1) not null
+      primary key,
+        Start      date               not null,
+        [End]      date               not null,
+        State      int                not null,
+        EmployeeId int                not null
+      )
+      end";
+    }
   }
 }
